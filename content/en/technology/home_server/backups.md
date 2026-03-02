@@ -221,7 +221,7 @@ You now have a full copy independent from the original files.
 
 ### Automating the process
 
-Manual backups always start well and then stop happening.
+Manual backups always start well and then stop happening, or take too long to set up.
 
 Create the script:
 
