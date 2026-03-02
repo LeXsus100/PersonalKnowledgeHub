@@ -202,7 +202,7 @@ Think of these as restore points in time.
 
 ## Restore files
 
-Create a restore folder:
+Create a restore folder wherever needed:
 
 ```bash
 mkdir -p /mnt/c/restore
