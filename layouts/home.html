@@ -1,0 +1,104 @@
+{{ define "main" }}
+<section class="section container-fluid mt-n3 pb-3">
+  <div class="row justify-content-center">
+    <div class="col-lg-12 text-center">
+      <h1>{{ .Title }}</h1>
+    </div>
+    <div class="col-lg-9 col-xl-8 text-center">
+      <p class="lead">{{ .Params.lead | safeHTML }}</p>
+      {{ if eq $.Site.Language.Lang "en" }}
+      <a class="btn btn-primary btn-cta rounded-pill btn-lg my-3" href="/docs/how-i-created-this-website/" role="button">{{ i18n "get_started" }}</a>
+      {{ end }}
+      {{ if eq $.Site.Language.Lang "it" }}
+      <a class="btn btn-primary btn-cta rounded-pill btn-lg my-3" href="/it/docs/come-ho-creato-questo-sito/" role="button">{{ i18n "get_started" }}</a>
+      {{ end }}
+      {{ .Content }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ define "sidebar-prefooter" }}
+  {{ if site.Params.doks.backgroundDots -}}
+  <div class="d-flex justify-content-start">
+    <div class="bg-dots"></div>
+  </div>
+  {{ end -}}
+  {{ if eq $.Site.Language.Lang "en" }}
+  <section class="section section-md section-features">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-5">
+          <h2 class="h4">🔧 Technology</h2>
+          <p>Notes, guides, and references on computers, servers, operating systems, software, and the digital tools I use and explore.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">💰 Finance</h2>
+          <p>Personal finance management, budgeting, basic investing, and key concepts for making informed financial decisions.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">🌱 Life</h2>
+          <p>Reflections, personal systems, productivity, habits, and everything that helps improve everyday life.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">✈️ Travel</h2>
+          <p>Travel experiences, itineraries, practical notes, and useful resources for planning and remembering trips.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">🌐 Website</h2>
+          <p>A curated collection of useful and interesting URLs, online services, tools, and web resources.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">📄 Docs</h2>
+          <p>Site documentation, PKM structure, conventions, and supporting or reference pages.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+  {{ if eq $.Site.Language.Lang "it" }}
+  <section class="section section-md section-features">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-5">
+          <h2 class="h4">🔧 Tecnologia</h2>
+          <p>Appunti, guide e riferimenti su computer, server, sistemi operativi, software e strumenti digitali che utilizzo e studio.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">💰 Finanza</h2>
+          <p>Gestione delle finanze personali, budgeting, investimenti di base e concetti chiave per decisioni finanziarie consapevoli.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">🌱 Vita</h2>
+          <p>Riflessioni, sistemi personali, produttività, abitudini e tutto ciò che contribuisce a migliorare la vita quotidiana.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">✈️ Viaggi</h2>
+          <p>Esperienze di viaggio, itinerari, appunti pratici e risorse utili per pianificare e ricordare i viaggi.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">🌐 Website</h2>
+          <p>Raccolta curata di URL, servizi online, tool e risorse web utili e interessanti.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">📄 Documenti</h2>
+          <p>Documentazione del sito, struttura del PKM, convenzioni, e pagine di supporto o riferimento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+{{ end }}
+
+{{ define "sidebar-footer" }}
+{{ if site.Params.doks.sectionFooter -}}
+<section class="section section-md container-fluid bg-light">
+  <div class="row justify-content-center text-center">
+    <div class="col-lg-7">
+      <h2 class="mt-2">Start building with Doks today</h2>
+      <a class="btn btn-primary rounded-pill px-4 my-2" href="/docs/{{ if site.Params.doks.docsVersioning }}{{ site.Params.doks.docsVersion }}/{{ end }}prologue/introduction/" role="button">{{ i18n "get-started" }}</a>
+    </div>
+  </div>
+</section>
+{{ end -}}
+{{ end }}
