@@ -14,17 +14,20 @@ seo:
   noindex: false # false (default) or true
 ---
 This document provides a **structured, safe, and progressive workflow** to clean, verify, and optimize a Windows system.  
-Follow the steps **in order**.  
-*Optional* and *situational* actions are clearly marked at the end.
+Follow the steps **in order**.
+
+{{< callout context="note" >}}
+*"Optional"* and *"situational"* actions are clearly marked at the end.
+{{< /callout >}}
 
 ---
 
-## 1. Preparation and Safety
+### 1. Preparation and Safety
 
 Before making any system-level changes, ensure rollback capability and baseline stability.
 
 **Create a System Restore Point**  
-Open *Advanced System Settings* → *System Protection* → *Create*.  
+Open *Advanced System Settings* → *System Protection* → *Create*  
 This allows recovery in case of misconfiguration.
 
 **Run the built-in Windows Troubleshooter**  
@@ -39,7 +42,7 @@ Skipping this phase increases the risk of irreversible issues later.
 
 ---
 
-## 2. Startup
+### 2. Startup
 
 Reduce unnecessary load and eliminate unused components.
 
@@ -60,7 +63,7 @@ Do **not** defragment SSDs. Windows manages SSD optimization automatically.
 
 ---
 
-## 3. Drivers and Updates
+### 3. Drivers and Updates
 
 Ensure the system is current, stable, and not overburdened by unnecessary services.
 
@@ -75,7 +78,7 @@ Ensure Windows is fully up to date before proceeding further.
 
 ---
 
-## 4. Security and Malwares
+### 4. Security and Malwares
 
 Confirm system integrity before optimization.
 
@@ -90,7 +93,7 @@ Do not optimize or debloat a system that may still be infected.
 
 ---
 
-## 5. System Integrity Checks
+### 5. System Integrity Checks
 
 Run the following commands **as Administrator**, in this order:
 
@@ -127,7 +130,7 @@ This requires a reboot and may take significant time.
 
 ---
 
-## 6. Software Update Verification
+### 6. Software Update Verification
 
 Ensure third-party software is current.
 
@@ -143,7 +146,7 @@ winget upgrade --all
 
 ---
 
-## 7. Performance Boosting
+### 7. Performance Boosting
 
 Only proceed once the system is confirmed stable.
 
@@ -157,16 +160,16 @@ Run in *PowerShell (Administrator)* and follow the instructions:
 For more information on this Windows11 debloater follow the [github project](https://github.com/Raphire/Win11Debloat).
 
 **Disable Visual Animations**  
-Advanced System Settings → Performance Options → disable animations.
+Advanced System Settings → Performance Options → disable animations  
 Keep **“Smooth edges of screen fonts”** enabled.
 
 **Battery and Power Configuration (Laptops)**  
-Review battery usage and power plans.
+Review battery usage and power plans.  
 Power Options → Advanced settings → verify CPU and power limits.
 
 ---
 
-## 8. Optional and Situational
+### 8. Optional and Situational
 
 **Service Optimization**  
 `msconfig` → Services → *Hide all Microsoft services* → disable non-essential services only.
@@ -190,7 +193,7 @@ Aggressive service or boot optimizations may reduce compatibility or stability.
 
 ---
 
-## Final Notes
+### Final Notes
 
 * Always prioritize **stability over marginal performance gains**.
 * Apply changes incrementally and test between steps.

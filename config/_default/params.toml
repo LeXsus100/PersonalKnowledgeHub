@@ -1,6 +1,6 @@
 # Hugo
-title = "My Docs"
-description = "Welcome to my Docs Project"
+title = "PKM"
+description = "Welcome to my PKM Project"
 images = ["cover.png"]
 
 # mainSections
@@ -44,7 +44,7 @@ mainSections = ["docs"]
   bootstrapJavascript = false # false (default) or true
 
   # Nav
-  sectionNav = ["docs","finance","technology","life","travel","website"] # ["docs"] (default) or list of sections (e.g. ["docs", "guides"])
+  sectionNav = ["docs","finance","technology","life","travel","science","society"] # ["docs"] (default) or list of sections (e.g. ["docs", "guides"])
   toTopButton = false # false (default) or true
   breadcrumbTrail = false # false (default) or true
   headlineHash = true # true (default) or false
@@ -83,11 +83,11 @@ mainSections = ["docs"]
   # SCSS colors
   # backGround = "yellowgreen"
   ## Dark theme
-  # textDark = "#dee2e6" # "#dee2e6" (default), "#dee2e6" (orignal), or custom color
+  # textDark = "#dee2e6" # "#dee2e6" (default), "#dee2e6" (original), or custom color
   # accentDark = "#5d2f86" # "#5d2f86" (default), "#5d2f86" (original), or custom color
   ## Light theme
-  # textLight = "#1d2d35" # "#1d2d35" (default), "#1d2d35" (orignal), or custom color
-  # accentLight = "#8ed6fb" # "#8ed6fb" (default), "#8ed6fb" (orignal), or custom color
+  # textLight = "#1d2d35" # "#1d2d35" (default), "#1d2d35" (original), or custom color
+  # accentLight = "#8ed6fb" # "#8ed6fb" (default), "#8ed6fb" (original), or custom color
 
   # [doks.menu]
   #   [doks.menu.section]
@@ -125,12 +125,12 @@ mainSections = ["docs"]
   [seo.favicons]
     sizes = []
     icon = "favicon.png" # favicon.png (default)
-    svgIcon = "kingfisher_icon.png" # favicon.svg (default)
+    svgIcon = "faviconPersonal.svg" # favicon.svg (default)
     maskIcon = "mask-icon.svg" # mask-icon.svg (default)
     maskIconColor = "white" # white (default)
   [seo.schemas]
     type = "Person" # Organization (default) or Person
-    logo = "kingfisher_icon.png" # Logo of Organization — favicon-512x512.png (default)
+    logo = "favicon-512x512.png" # Logo of Organization — favicon-512x512.png (default)
     name = "Luigi" # Name of Organization or Person
     sameAs = [] # E.g. ["https://github.com/thuliteio/thulite", "https://fosstodon.org/@thulite"]
     images = ["cover.png"] # ["cover.png"] (default)

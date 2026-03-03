@@ -1,5 +1,5 @@
 ---
-title: "Software"
+title: "Wars & Conflicts"
 description: ""
 summary: ""
 date: 2023-09-07T16:12:03+02:00
@@ -10,8 +10,6 @@ toc: true
 seo:
   title: "" # custom title (optional)
   description: "" # custom description (recommended)
-  canonical: "https://example.com" # custom canonical URL (optional)
+  canonical: "" # custom canonical URL (optional)
   noindex: true # false (default) or true
 ---
-
-What if I write something?

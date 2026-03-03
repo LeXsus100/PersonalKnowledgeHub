@@ -1,15 +1,15 @@
 ---
-title: "Introduction"
+title: "Gaza War"
 description: ""
 summary: ""
-date: 2023-09-07T16:04:48+02:00
-lastmod: 2023-09-07T16:04:48+02:00
+date: 2026-03-03
+lastmod: 2026-03-03
 draft: false
-weight: 10
+weight: 11
 toc: true
 seo:
   title: "" # custom title (optional)
   description: "" # custom description (recommended)
   canonical: "" # custom canonical URL (optional)
-  noindex: false # false (default) or true
+  noindex: true # false (default) or true
 ---

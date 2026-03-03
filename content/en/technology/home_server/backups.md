@@ -13,115 +13,116 @@ seo:
   canonical: "" # custom canonical URL (optional)
   noindex: false # false (default) or true
 ---
-This is one of those topics everyone postpones until the day everything explodes.
+Backups are a fundamental reliability measure. They are not an optimization and not optional.  
+Without backups, a single error or hardware failure can result in irreversible data loss.
 
-{{< callout context="note" >}}
-Backups are not an optimization, not a “nice to have”, and not a "future-me" problem.  
-They are the only thing standing between *a small mistake* and *permanent data loss*.
-{{< /callout >}}
+At some point, one of the following will occur:
 
-You will eventually:
+* Accidental deletion of files or directories
+* Overwriting a configuration file
+* Misconfiguration of a container or service
+* Filesystem corruption
+* Storage device failure
 
-* delete the wrong folder
-* overwrite a config
-* break a container
-* corrupt a filesystem
-* or a disk will just die randomly
-
-It’s not pessimism, it’s statistics.
+These events are normal operational risks, not exceptional situations.
 
 ---
 
-## So… what is a backup?
+## What Is a Backup?
 
-A backup is **a recoverable historical copy of your data stored on another physical device**.
+A backup is a **recoverable historical copy of data stored on a separate physical device**.
 
-Important distinction:
+Two properties are essential:
 
-| Thing                                     | Is it a backup? |
-| ----------------------------------------- | --------------- |
-| Copy on same disk                         | ❌ no           |
-| Sync (Nextcloud, Syncthing, rsync mirror) | ❌ no           |
-| RAID                                      | ❌ no           |
-| External disk with snapshots              | ✅ yes          |
+1. The copy must be stored on different physical media.
+2. Historical versions must be preserved.
 
-RAID protects uptime.
-Sync protects convenience.
-Backups protect your life.
+### What Is *Not* a Backup
 
-Also: a backup that only contains the *latest version* is dangerous.  
-If you accidentally delete a folder and the backup updates → congratulations, you just backed up the mistake.
+| Mechanism                                                 | Backup?    |
+| --------------------------------------------------------- | ---------- |
+| Copy on the same disk                                     | ❌ No      |
+| File synchronization (Nextcloud, Syncthing, rsync mirror) | ❌ No      |
+| RAID                                                      | ❌ No      |
+| External disk with versioned snapshots                    | ✅ Yes     |
 
-You want **history**.
+* RAID improves availability but does not protect against logical errors.
+* Synchronization mirrors the current state, including deletions.
+* A backup must allow recovery of previous states.
+
+A system that stores only the latest version is insufficient.  
+If a file is deleted or corrupted and the backup updates immediately, the damaged state replaces the valid one.  
+Version history is therefore mandatory.
 
 ---
 
-### Why this matters especially on a homeserver
+### Why This Is Critical on a Homeserver
 
-A **homeserver centralizes everything**:
+A homeserver often centralizes:
 
-* documents
-* photos
-* PKM vault
-* docker volumes
-* configs
+* Personal documents
+* Photos
+* PKM vaults
+* Docker volumes
+* Configuration files
 * SSH keys
-* databases
+* Databases
 
-You basically created a **single point of failure** in your house.
+This architecture introduces a **single point of failure**.
 
-And most real data loss is not hardware failure, it's you (or software acting on your behalf).
+Empirical data shows that most data loss incidents are caused by user error or software misbehaviour rather than hardware failure.
 
-Typical real scenarios:
+Typical scenarios:
 
-* `rm -rf` in the wrong directory
-* bind mount pointing to the wrong path
-* a broken docker container overwriting data
-* a sync client propagating deletions
-* filesystem corruption discovered weeks later
+* Executing `rm -rf` in the wrong directory
+* Incorrect bind mounts overwriting host data
+* A malfunctioning container modifying persistent volumes
+* A sync client propagating deletions
+* Filesystem corruption discovered weeks later
 
-Notice the pattern: you often realize the problem **late**.  
-That’s why versioned backups matter.
+In many cases, the issue is detected after some delay.  
+For this reason, versioned backups are required.
 
 ---
 
 ### The 3-2-1 Rule
 
-Keep:
+Maintain:
 
-* 3 copies of data
-* on 2 different media
-* 1 offline/offsite
+{{< callout context="tip" >}}
+* 3 total copies of the data
+* Stored on 2 different types of media
+* With at least 1 copy offline or offsite
+{{< /callout >}}
 
 Example:
 
-* main data → homeserver
-* backup → external HDD
-* safety → another drive / remote storage
+* Primary data on the homeserver
+* Backup on an external hard drive
+* Additional copy on a second external drive or remote storage
 
-Without this, you’re relying on luck.
+This reduces dependency on a single device or location.
 
 ---
 
-## Why BorgBackup
+## BorgBackup
 
-[https://www.borgbackup.org/](https://www.borgbackup.org/)
+BorgBackup is a deduplicating, encrypted, versioned backup tool.
 
-Borg is basically *git for filesystems*.
+🌐 Website: [https://www.borgbackup.org/](https://www.borgbackup.org/)
 
-Instead of copying files every time, it:
+Borg operates by:
 
-* splits them into chunks
-* detects what changed
-* only saves the difference
-* compresses it
-* encrypts it
-* keeps snapshots
+* Splitting files into content-defined chunks
+* Deduplicating unchanged chunks
+* Compressing data
+* Encrypting repository contents
+* Creating snapshot-based archives
 
-Result:
-You can restore **a file from 4 months ago even if it no longer exists today**.
+Each backup execution creates a **snapshot**.  
+Files can be restored exactly as they existed at a specific time, even if they no longer exist in the current filesystem.
 
-That single feature is the reason Borg is superior to rsync mirrors.
+This snapshot model distinguishes Borg from simple rsync mirrors, which only reflect the most recent state.
 
 ---
 
@@ -134,96 +135,89 @@ borg --version
 
 ---
 
-### Repository setup
+### Repository Setup
 
-##### 1) Create the repository folder (your backup HDD)
+#### 1. Create Repository Directory
 
-Assuming the external disk is `E:` in WSL:
+Example (external disk mounted as `E:` in WSL):
 
 ```bash
 mkdir -p /mnt/e/borg-repo
 ```
 
-##### 2) Initialize the repository
+#### 2. Initialize Repository
 
 ```bash
-borg init --encryption=repokey /mnt/e/borg-repo
+borg init --encryption=repokey-blake2 /mnt/e/borg-repo
 ```
 
-You can also use `repokey-blake2` that is faster on modern CPUs.
+`repokey-blake2` is recommended on modern CPUs for improved performance.
 
-It will ask for a passphrase.
+You will be prompted for a passphrase.
 
-{{< callout context="caution" >}}
-**Do not invent one manually.**  
-Generate it in your password manager and save it there.
-{{< /callout >}}
+* Generate it using a password manager.
+* Store it securely and do not rely on memory.
 
-{{< callout context="danger" >}}
-If you lose this passphrase, the data is gone **forever**. No recovery.
-{{< /callout >}}
+If the passphrase is lost, the repository is unrecoverable.
 
-##### 3) Export the key
+#### 3. Export Repository Key
 
 ```bash
 borg key export /mnt/e/borg-repo /mnt/e/borg-repo.key
 ```
 
-Save the key file inside your password manager / secure archive.
-
-Then delete it from disk:
+Store this file securely (for example, inside an encrypted archive or password manager attachment), then remove it from the backup disk:
 
 ```bash
 rm /mnt/e/borg-repo.key
 ```
 
-This protects you if the repository metadata gets damaged.
+This protects against repository metadata corruption.
 
 ---
 
-## Create a backup
+## Creating a Backup
 
 ```bash
 borg create --stats --progress /mnt/e/borg-repo::BACKUPNAME /mnt/c/PATH
 ```
 
-You can run this many times.
-Borg will not duplicate data — it will only store changes and create a snapshot.
+Each execution creates a new snapshot. Unchanged data is not duplicated.
 
-#### See available snapshots
+### List Snapshots
 
 ```bash
 borg list /mnt/e/borg-repo
 ```
 
-Think of these as restore points in time.
+Each entry corresponds to a restorable point in time.
 
 ---
 
-## Restore files
+## Restoring Data
 
-Create a restore folder wherever needed:
+Create a restore directory:
 
 ```bash
 mkdir -p /mnt/c/restore
 cd /mnt/c/restore
 ```
 
-Restore a snapshot:
+Extract a snapshot:
 
 ```bash
 borg extract /mnt/e/borg-repo::BACKUPNAME --strip-components 2
 ```
 
-You now have a full copy independent from the original files.
+The restored files are independent from the original source.
 
 ---
 
-### Automating the process
+## Automation
 
-Manual backups always start well and then stop happening, or take too long to set up.
+Manual backups are unreliable over time. Automating execution ensures consistency.
 
-Create the script:
+Create a script:
 
 ```bash
 cat > ~/backup_versioned.sh <<'EOF'
@@ -239,12 +233,6 @@ KEEP_DAILY=7
 KEEP_WEEKLY=4
 KEEP_MONTHLY=12
 KEEP_YEARLY=2
-
-echo "== Borg versioned backup =="
-echo "Repo:    $REPO"
-echo "Source:  $SRC"
-echo "Archive: $ARCHIVE"
-echo
 
 if [ ! -d "$REPO" ]; then
   echo "ERROR: Borg repository not found at: $REPO"
@@ -264,40 +252,30 @@ borg create --stats --progress \
   "$REPO::$ARCHIVE" \
   "$SRC"
 
-echo
-echo "== Pruning old archives (retention policy) =="
 borg prune -v --list "$REPO" \
   --keep-daily="$KEEP_DAILY" \
   --keep-weekly="$KEEP_WEEKLY" \
   --keep-monthly="$KEEP_MONTHLY" \
   --keep-yearly="$KEEP_YEARLY"
 
-echo
-echo "== Repository check (lightweight) =="
 borg check "$REPO"
-
-echo
-echo "== Done =="
 EOF
 ```
 
-#### Run it
+Make executable:
 
 ```bash
-cd /mnt/c/PATH OF THE .sh FILE
 chmod +x backup_versioned.sh
 ```
 
-If Windows line ending problems:
+If Windows line endings cause issues:
 
 ```bash
 dos2unix backup_versioned.sh
 chmod +x backup_versioned.sh
 ```
 
-thus, if necessary, install it: `sudo apt install dos2unix`.
-
-Execute:
+Run:
 
 ```bash
 ./backup_versioned.sh
@@ -305,37 +283,24 @@ Execute:
 
 ---
 
-## Delete the entire backup
-
-If you really need it.
+## Deleting the Repository
 
 ```bash
 rm -rf /mnt/e/borg-repo
-ls /mnt/e
 ```
+
+This permanently removes all backups.
 
 ---
 
-## What you now have
+## Verification
 
-You now have:
+A backup strategy is not complete until restoration has been tested.
 
-* version history
-* encrypted backups
-* space-efficient storage
-* corruption detection
-* the ability to go back in time
+After setup:
 
-Retention policy:
+1. Restore a random directory.
+2. Open several files.
+3. Confirm integrity.
 
-* 7 daily
-* 4 weekly
-* 12 monthly
-* 2 yearly
-
-A backup only exists after you **restore something and open it successfully**.
-
-{{< callout context="caution" title="Caution" icon="outline/alert-triangle" >}}
-After finishing setup, restore a random folder and check the files.  
-Until you do that, you are trusting, not backing up.
-{{< /callout >}}
+A backup should be considered valid only after a successful restoration test.
