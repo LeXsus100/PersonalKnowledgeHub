@@ -174,23 +174,64 @@ rm /mnt/e/borg-repo.key
 
 This protects against repository metadata corruption.
 
----
+#### 4. Retention
 
-## Creating a Backup
+Based on your policy, you can decide whether to keep a fixed number of backups or a based on data. The most common example is:
 
 ```bash
-borg create --stats --progress /mnt/e/borg-repo::BACKUPNAME /mnt/c/PATH
+borg prune -v --list /mnt/e/borg-repo --keep-daily=7 --keep-weekly=4 --keep-monthly=6
+```
+
+which means Borg keep the last 7 days, 4 weekly backups and 6 monthly ones.
+
+Because Borg use a log-structured repository, the previous command does not immediately free up space. Thus you have to write the following command as well:
+
+```bash
+borg compact /mnt/e/borg-repo
+```
+
+It's important to run these two retention commands in order to check whether there are outdated backups and free up space for the incoming backup.
+
+---
+
+## Creating a Backup & Check
+
+```bash
+borg create --stats --progress /mnt/e/borg-repo::'{hostname}_{now:%Y-%m-%d}' /mnt/c/PATH
 ```
 
 Each execution creates a new snapshot. Unchanged data is not duplicated.
 
-### List Snapshots
+#### List Snapshots
 
 ```bash
 borg list /mnt/e/borg-repo
 ```
 
-Each entry corresponds to a restorable point in time.
+Each entry corresponds to a restorable point in time.  
+If you want a more detailed info:
+
+```bash
+borg info /mnt/e/borg-repo::BACKUPNAME
+```
+
+Every now and then (because it could be slow) you should also check for integrity:
+
+```bash
+borg check /mnt/e/borg-repo
+```
+
+and its in-depth variant:
+
+```bash
+borg check --verify-data /mnt/e/borg-repo
+```
+
+To check the size of the backups data, the most practical command is the following:
+
+```bash
+borg list --format '{archive:<36} {time} {size} {nfiles} files' /mnt/e/borg-repo
+```
 
 ---
 
@@ -203,10 +244,17 @@ mkdir -p /mnt/c/restore
 cd /mnt/c/restore
 ```
 
-Extract a snapshot:
+Extract a full snapshot:
 
 ```bash
 borg extract /mnt/e/borg-repo::BACKUPNAME --strip-components 2
+```
+
+or a specific folder adding the path after the backup's name (in this case `name/university`):
+
+```bash
+borg list /mnt/e/borg-repo::BACKUPNAME name/university
+borg extract /mnt/e/borg-repo::BACKUPNAME name/university --strip-components 2
 ```
 
 The restored files are independent from the original source.
@@ -299,8 +347,8 @@ A backup strategy is not complete until restoration has been tested.
 
 After setup:
 
-1. Restore a random directory.
-2. Open several files.
-3. Confirm integrity.
+1. Restore a random directory
+2. Open several files
+3. Confirm integrity
 
 A backup should be considered valid only after a successful restoration test.
